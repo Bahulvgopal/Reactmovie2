@@ -4,7 +4,7 @@ import MovieCard from "./MovieCard.jsx";
 import SearchIcon from "./search.svg";
 import "./App.css";
 
-const API_URL = "http://www.omdbapi.com?apikey=d492ff0c";
+const API_URL = "http://www.omdbapi.com/?apikey=d492ff0c";
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,10 +12,18 @@ const App = () => {
 
 
   const searchMovies = async (title) => {
-    const response = await fetch(`${API_URL}&s=${title}`);
-    const data = await response.json();
-    setMovies(data.Search);
+    try {
+      const response = await fetch(`${API_URL}&s=${title}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      setMovies(data.Search);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
+
   useEffect(() => {
     searchMovies("Batman");
   }, []);
